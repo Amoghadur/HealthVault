@@ -1,0 +1,37 @@
+.backups/
+.hardhat-appdata/
+.hardhat-localappdata/
+**/node_modules/
+**/.env
+**/.env.*
+!**/.env.example
+backend/uploads/
+backend/data/*.json
+backend/data/*.jsonl
+frontend/dist/
+contracts/artifacts/
+contracts/cache/
+test-results/
+
+# Secrets and private keys
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+secrets/
+**/secrets/
+
+# Local databases and runtime files
+*.sqlite
+*.sqlite3
+*.db
+*.log
+backend/data/
+
+# Local environment and editor files
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db

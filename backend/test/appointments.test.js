@@ -1,0 +1,52 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import express from 'express';
+import jwt from 'jsonwebtoken';
+import { createAppointmentStore } from '../services/appointmentStore.js';
+import { createAppointmentRouter } from '../routes/appointments.js';
+
+test('appointment backend binds booking to JWT patient and only assigned doctor can list/confirm', async t => {
+  process.env.JWT_SECRET = 'synthetic-appointment-test-secret-32ch';
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'hv-appointments-'));
+  const file = path.join(dir, 'appointments.json');
+  const store = createAppointmentStore(file);
+  const patient = '0x0000000000000000000000000000000000000001';
+  const doctor = '0x0000000000000000000000000000000000000002';
+  const stranger = '0x0000000000000000000000000000000000000003';
+  const app = express(); app.use(express.json()); app.use('/appointments', createAppointmentRouter({ store }));
+  const server = app.listen(0, '127.0.0.1');
+  await new Promise(resolve => server.once('listening', resolve));
+  t.after(async () => { await new Promise(resolve => server.close(resolve)); fs.rmSync(dir, { recursive: true }); });
+  const base = `http://127.0.0.1:${server.address().port}/appointments`;
+  function call(route, address, body) {
+    const headers = { 'Content-Type': 'application/json', 'X-Role': 'doctor' };
+    if (address) headers.Authorization = `Bearer ${jwt.sign({ address, patientId: 'HV-TEST' }, process.env.JWT_SECRET)}`;
+    return fetch(base + route, { method: body ? 'POST' : 'GET', headers, ...(body ? { body: JSON.stringify(body) } : {}) });
+  }
+  const booking = { patientName: 'Synthetic patient', patientId: 'SPOOFED', patientAddress: stranger, doctor: 'Display name only', doctorAddress: doctor, date: '2099-12-12', time: '10:00 AM', reason: 'Test visit' };
+  assert.equal((await call('/doctor', null)).status, 401);
+  assert.equal((await call('/book', patient, { ...booking, doctorAddress: undefined })).status, 400);
+  assert.equal((await call('/book', patient, { ...booking, date: '2099-02-31' })).status, 400);
+  const response = await call('/book', patient, booking);
+  assert.equal(response.status, 200);
+  const { appointment } = await response.json();
+  assert.equal(appointment.patientAddress, patient);
+  assert.equal(appointment.patientId, 'HV-TEST');
+  assert.equal((await (await call('/doctor', stranger)).json()).appointments.length, 0);
+  assert.equal((await (await call('/doctor', doctor)).json()).appointments.length, 1);
+  assert.equal((await (await call('/patient', stranger)).json()).appointments.length, 0);
+  assert.equal((await call('/confirm/' + appointment.id, stranger, {})).status, 403);
+  assert.equal((await call('/confirm/' + appointment.id, patient, {})).status, 403);
+  const confirmed = await (await call('/confirm/' + appointment.id, doctor, {})).json();
+  assert.equal(confirmed.appointment.status, 'confirmed');
+  assert.equal(createAppointmentStore(file).read()[0].confirmedAt, confirmed.appointment.confirmedAt);
+  const again = await (await call('/confirm/' + appointment.id, doctor, {})).json();
+  assert.equal(again.appointment.confirmedAt, confirmed.appointment.confirmedAt);
+  store.write([...store.read(), { id: 'legacy', patientAddress: patient, doctor: 'Unbound name', status: 'pending' }]);
+  assert.equal((await call('/confirm/legacy', doctor, {})).status, 403);
+  fs.writeFileSync(file, 'invalid');
+  assert.equal((await call('/patient', patient)).status, 503);
+});

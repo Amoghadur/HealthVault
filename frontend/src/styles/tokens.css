@@ -1,0 +1,482 @@
+/* ==========================================================================
+   HealthVault Design System — Design Tokens & Core Primitives
+   Visual Language: Calm, minimal, editorial healthcare with primary green #238071
+   ========================================================================== */
+
+:root {
+  /* Colors & Atmospheric Gradients */
+  --bg-app: #F4F8F6;
+
+  /* Animated Spatial Background Gradient Palette (visionOS multi-stop green family) */
+  --bg-grad-1: #FCFDFD; /* near-white */
+  --bg-grad-2: #E3F3EF; /* pale mint */
+  --bg-grad-3: #A8D8CE; /* soft teal */
+  --bg-grad-4: #5FB5A5; /* mid green */
+  --bg-grad-5: #238071; /* brand green (gentle accent) */
+  --bg-grad-accent: rgba(35, 128, 113, 0.14); /* soft brand green accent stop */
+
+  --spatial-bg-app: linear-gradient(
+    135deg,
+    var(--bg-grad-1) 0%,
+    var(--bg-grad-2) 28%,
+    var(--bg-grad-3) 55%,
+    var(--bg-grad-accent) 75%,
+    var(--bg-grad-1) 100%
+  );
+
+  --bg-surface: rgba(255, 255, 255, 0.72);
+  --bg-surface-subtle: rgba(250, 252, 251, 0.65);
+  --bg-surface-elevated: rgba(255, 255, 255, 0.85);
+  --bg-glass: rgba(255, 255, 255, 0.68);
+  --bg-glass-subtle: rgba(255, 255, 255, 0.55);
+  --bg-glass-tint: rgba(227, 243, 239, 0.75);
+
+  /* Spatial UI Depth Layers (visionOS glass specification) */
+  --glass-l1-bg: rgba(255, 255, 255, 0.58);
+  --glass-l1-blur: blur(20px) saturate(1.35);
+  --glass-l1-border: 1px solid rgba(255, 255, 255, 0.65);
+  --glass-l1-outer-border: 1px solid rgba(35, 128, 113, 0.08);
+  --glass-l1-shadow: 0 4px 16px rgba(14, 14, 16, 0.025), 0 10px 24px rgba(35, 128, 113, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.85);
+
+  --glass-l2-bg: rgba(255, 255, 255, 0.68);
+  --glass-l2-blur: blur(26px) saturate(1.45);
+  --glass-l2-border: 1px solid rgba(255, 255, 255, 0.75);
+  --glass-l2-outer-border: 1px solid rgba(35, 128, 113, 0.12);
+  --glass-l2-shadow: 0 8px 24px rgba(14, 14, 16, 0.035), 0 20px 48px rgba(35, 128, 113, 0.09), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+
+  --glass-l3-bg: rgba(255, 255, 255, 0.82);
+  --glass-l3-blur: blur(34px) saturate(1.6);
+  --glass-l3-border: 1px solid rgba(255, 255, 255, 0.9);
+  --glass-l3-outer-border: 1px solid rgba(35, 128, 113, 0.16);
+  --glass-l3-shadow: 0 16px 40px rgba(14, 14, 16, 0.05), 0 32px 72px rgba(35, 128, 113, 0.16), inset 0 1.5px 1px rgba(255, 255, 255, 1);
+
+  /* Text */
+  --text-primary: #0E0E10;
+  --text-secondary: #6E6E76;
+  --text-tertiary: #9A9AA2;
+  --text-muted: #B5B5BE;
+  --text-inverted: #FFFFFF;
+
+  /* Accent: Primary Medical Green Palette (#238071) */
+  --primary: #238071;
+  --primary-dark: #1A6056;
+  --primary-mid: #5FB5A5;
+  --primary-light: #A8D8CE;
+  --primary-tint: #E3F3EF;
+
+  /* Semantic mappings for the design system */
+  --accent-primary: var(--primary);
+  --accent-primary-dark: var(--primary-dark);
+  --accent-primary-mid: var(--primary-mid);
+  --accent-primary-light: var(--primary-light);
+  --accent-primary-tint: var(--primary-tint);
+
+  --accent-glow: rgba(35, 128, 113, 0.25);
+  --accent-glow-subtle: rgba(35, 128, 113, 0.12);
+  --accent-gradient: linear-gradient(135deg, #238071 0%, #7CC4B5 100%);
+  --accent-gradient-hover: linear-gradient(135deg, #1A6056 0%, #5FB5A5 100%);
+  --accent-gradient-subtle: linear-gradient(135deg, rgba(35, 128, 113, 0.12) 0%, rgba(124, 196, 181, 0.18) 100%);
+
+  /* Functional Status Colors (Softened medical grade) */
+  --status-success-bg: #EDF7F1;
+  --status-success-text: #1E6B3E;
+  --status-success-border: #D1EAD9;
+  --status-warning-bg: #FFF8EB;
+  --status-warning-text: #8C5E08;
+  --status-warning-border: #FFE8BF;
+  --status-error-bg: #FFF0F0;
+  --status-error-text: #A82424;
+  --status-error-border: #FCD6D6;
+
+  /* Borders & Outlines */
+  --border-subtle: #E8E8EC;
+  --border-light: #EEEEF1;
+  --border-focus: var(--primary);
+  --border-glass: rgba(255, 255, 255, 0.85);
+
+  /* Shadows (Ultra-soft, no heavy drop-shadows) */
+  --shadow-sm: 0 2px 8px rgba(14, 14, 16, 0.025);
+  --shadow-card: 0 10px 30px rgba(14, 14, 16, 0.04), 0 1px 3px rgba(14, 14, 16, 0.02);
+  --shadow-elevated: 0 20px 48px rgba(14, 14, 16, 0.06), 0 2px 6px rgba(14, 14, 16, 0.02);
+  --shadow-primary: 0 12px 32px rgba(35, 128, 113, 0.2);
+
+  /* Radii (Apple visionOS 28-44px radii) */
+  --radius-pill: 9999px;
+  --radius-card: 32px;
+  --radius-card-sm: 24px;
+  --radius-frame: 40px;
+  --radius-inner: 18px;
+  --radius-spatial-sm: 20px;
+  --radius-spatial-md: 28px;
+  --radius-spatial-lg: 36px;
+  --radius-spatial-xl: 44px;
+
+  /* Typography */
+  --font-sans: 'Inter Tight', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'DM Mono', monospace;
+  --tracking-tight: -0.035em;
+  --tracking-tighter: -0.05em;
+  --tracking-wide: 0.08em;
+
+  /* Motion */
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --duration-fast: 0.18s;
+  --duration-normal: 0.35s;
+  --duration-slow: 0.65s;
+}
+
+/* Global Reset & Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-sans);
+  background: var(--spatial-bg-app);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: var(--spatial-bg-app);
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+/* Spatial Outer Shell - allows glass panels to float seamlessly */
+.app-frame-wrapper {
+  padding: 0;
+  min-height: 100vh;
+  background: transparent;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.app-frame {
+  background: transparent;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Typography Helpers */
+.two-tone-heading {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-primary);
+  line-height: 1.08;
+}
+
+.two-tone-heading em,
+.two-tone-heading .highlight-primary {
+  font-style: normal;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 600;
+}
+
+.two-tone-heading .highlight-grey {
+  font-style: normal;
+  color: var(--text-tertiary);
+  font-weight: 400;
+}
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.section-label::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary-dark);
+}
+
+/* Spatial Pill Controls (visionOS Glass Pill Style) */
+.pill-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 24px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-spring), box-shadow var(--duration-fast) ease, background var(--duration-fast) ease, border-color var(--duration-fast) ease;
+  text-decoration: none;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  transform: translateZ(0);
+}
+
+.pill-button:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.03);
+}
+
+.pill-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.pill-button-solid {
+  background-color: var(--text-primary);
+  color: var(--text-inverted);
+  box-shadow: 0 4px 14px rgba(14, 14, 16, 0.12);
+}
+
+.pill-button-solid:hover:not(:disabled) {
+  background-color: #24242A;
+  box-shadow: 0 10px 24px rgba(14, 14, 16, 0.22);
+}
+
+.pill-button-primary {
+  background: var(--accent-gradient);
+  color: var(--text-inverted);
+  box-shadow: 0 4px 16px rgba(35, 128, 113, 0.32), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+
+.pill-button-primary:hover:not(:disabled) {
+  background: var(--accent-gradient-hover);
+  box-shadow: 0 10px 28px rgba(35, 128, 113, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+}
+
+.pill-button-outline {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  outline: 1px solid rgba(35, 128, 113, 0.10);
+  box-shadow: 0 2px 8px rgba(14, 14, 16, 0.02);
+}
+
+.pill-button-outline:hover:not(:disabled) {
+  border-color: var(--primary);
+  background: var(--primary-tint);
+  box-shadow: 0 6px 18px rgba(35, 128, 113, 0.16);
+}
+
+.pill-input {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  outline: 1px solid rgba(35, 128, 113, 0.10);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  box-shadow: inset 0 1px 2px rgba(14, 14, 16, 0.03);
+  transition: all var(--duration-fast) ease;
+}
+
+.pill-input:focus {
+  border-color: var(--primary);
+  outline-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(35, 128, 113, 0.18), 0 4px 16px rgba(35, 128, 113, 0.12);
+  transform: scale(1.01);
+}
+
+/* Spatial Depth Layer Classes (visionOS Spec) */
+.spatial-layer-1 {
+  position: relative;
+  background: var(--glass-l1-bg);
+  backdrop-filter: var(--glass-l1-blur);
+  -webkit-backdrop-filter: var(--glass-l1-blur);
+  border: var(--glass-l1-border);
+  outline: var(--glass-l1-outer-border);
+  box-shadow: var(--glass-l1-shadow);
+  border-radius: var(--radius-spatial-md);
+}
+
+.spatial-panel,
+.spatial-layer-2,
+.glass-card {
+  position: relative;
+  background: var(--glass-l2-bg);
+  backdrop-filter: var(--glass-l2-blur);
+  -webkit-backdrop-filter: var(--glass-l2-blur);
+  border: var(--glass-l2-border);
+  outline: var(--glass-l2-outer-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--glass-l2-shadow);
+  transition: transform var(--duration-normal) var(--ease-spring), box-shadow var(--duration-normal) var(--ease-spring);
+}
+
+/* Subtle Top-Edge Specular Highlight */
+.spatial-panel::before,
+.spatial-layer-2::before,
+.spatial-layer-3::before,
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 24px;
+  right: 24px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.95) 25%, rgba(255, 255, 255, 0.95) 75%, transparent 100%);
+  pointer-events: none;
+  border-radius: var(--radius-pill);
+  z-index: 2;
+}
+
+.spatial-layer-3 {
+  position: relative;
+  background: var(--glass-l3-bg);
+  backdrop-filter: var(--glass-l3-blur);
+  -webkit-backdrop-filter: var(--glass-l3-blur);
+  border: var(--glass-l3-border);
+  outline: var(--glass-l3-outer-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--glass-l3-shadow);
+  transition: transform var(--duration-normal) var(--ease-spring), box-shadow var(--duration-normal) var(--ease-spring);
+}
+
+/* Fallback for browsers without backdrop-filter */
+@supports not (backdrop-filter: blur(10px)) {
+  .spatial-panel,
+  .spatial-layer-1,
+  .spatial-layer-2,
+  .spatial-layer-3,
+  .glass-card,
+  .pill-input,
+  .pill-button-outline {
+    background: rgba(255, 255, 255, 0.94) !important;
+  }
+}
+
+/* Tilted card with subtle accent */
+.tilted-card {
+  position: relative;
+  transition: transform var(--duration-normal) var(--ease-spring), box-shadow var(--duration-normal) ease;
+}
+
+.tilted-card:hover {
+  transform: translateY(-4px) rotate(-0.5deg);
+  box-shadow: var(--shadow-elevated);
+}
+
+/* Giant Oversized Typography */
+.giant-display-text {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-tighter);
+  color: rgba(14, 14, 16, 0.05);
+  line-height: 0.88;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Numbered Section Tile "01", "02", "03" */
+.numbered-tile {
+  background: var(--bg-surface-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-card);
+  padding: 32px;
+  position: relative;
+  transition: all var(--duration-normal) var(--ease-spring);
+}
+
+.numbered-tile:hover {
+  background: #FFFFFF;
+  border-color: var(--primary-light);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-elevated);
+}
+
+.numbered-numeral {
+  font-size: clamp(48px, 6vw, 76px);
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  color: var(--text-muted);
+  line-height: 1;
+  font-feature-settings: "tnum";
+}
+
+/* Marquee Ticker */
+.marquee-container {
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  padding: 18px 0;
+}
+
+.marquee-content {
+  display: inline-flex;
+  gap: 32px;
+  animation: marquee-scroll 28s linear infinite;
+}
+
+.marquee-content:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-item {
+  font-size: clamp(20px, 2.5vw, 32px);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.marquee-sep {
+  color: var(--primary-light);
+  font-weight: 300;
+}
+
+.marquee-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid var(--primary);
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* Accessibility & Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .marquee-content {
+    animation: none;
+    overflow-x: auto;
+  }
+}

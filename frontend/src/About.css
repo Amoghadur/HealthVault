@@ -1,0 +1,19 @@
+/* AboutPage specific styles */
+.about-page-wrapper {
+  background-color: var(--bg-app);
+}
+
+.vertical-year-picker {
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) 2.2fr;
+  gap: 36px;
+  align-items: center;
+  padding: 32px 0;
+}
+
+@media (max-width: 768px) {
+  .vertical-year-picker {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
