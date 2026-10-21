@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import fs from "fs";
 import path from "path";
+import { getUploadsDir } from "./storagePaths.js";
 
 /**
  * Validates the RECORD_KEY_ENCRYPTION_SECRET master secret.
@@ -121,7 +122,7 @@ export function resolveRecordKey(record, masterKeyBuffer) {
  * Creates a timestamped backup before modifying the file and never deletes the backup.
  * Subsequent runs detect already-wrapped records and do nothing (no duplicate backups).
  */
-export function migrateRecordsMetadata({ uploadsDir = "uploads", masterKeyBuffer, now = Date.now } = {}) {
+export function migrateRecordsMetadata({ uploadsDir = getUploadsDir(), masterKeyBuffer, now = Date.now } = {}) {
   const recordsFilePath = path.join(uploadsDir, "records_metadata.json");
   if (!fs.existsSync(recordsFilePath)) {
     return { migrated: false, count: 0, reason: "file-not-found" };
@@ -141,7 +142,11 @@ export function migrateRecordsMetadata({ uploadsDir = "uploads", masterKeyBuffer
     throw new Error(`Failed to parse records metadata: ${err.message}`);
   }
 
-  if (!Array.isArray(records) || records.length === 0) {
+  if (!Array.isArray(records)) {
+    throw new Error("Failed to parse records metadata: Expected a JSON array.");
+  }
+
+  if (records.length === 0) {
     return { migrated: false, count: 0, reason: "empty" };
   }
 

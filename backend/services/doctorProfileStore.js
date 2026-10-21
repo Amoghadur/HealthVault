@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
 import { ethers } from 'ethers';
+import { getDataDir } from './storagePaths.js';
 
 const limits = { displayName: 160, specialty: 120, affiliation: 200, department: 120, registrationNumber: 100 };
 const required = new Set(['displayName', 'specialty', 'affiliation']);
@@ -26,7 +26,7 @@ export function validateProfileFields(input) {
   return fields;
 }
 
-export function createDoctorProfileStore(file = fileURLToPath(new URL('../data/doctor_profiles.json', import.meta.url))) {
+export function createDoctorProfileStore(file = path.join(getDataDir(), 'doctor_profiles.json')) {
   function read() {
     let raw;
     try { raw = fs.readFileSync(file, 'utf8'); }

@@ -15,6 +15,7 @@ import { readCurrentAccess } from "../services/blockchain.js";
 import { defaultPatientProfileStore } from "../services/patientProfileStore.js";
 import { validateEmergencyQrBaseUrl, buildEmergencyScanUrl, getEmergencyQrConfig } from "../services/emergencyQrUrl.js";
 import { createConsentRateLimiter, createEmergencyQrRateLimiter, createEmergencyScanRateLimiter } from "../middleware/rateLimiting.js";
+import { getUploadsDir } from "../services/storagePaths.js";
 dotenv.config();
 
 
@@ -49,7 +50,7 @@ export function createConsentRouter({
   requestStore = defaultConsentRequestStore,
   allowListStore = defaultConsentAllowListStore,
   hasAccess = readCurrentAccess,
-  recordsFilePath = path.join("uploads", "records_metadata.json"),
+  recordsFilePath = path.join(getUploadsDir(), "records_metadata.json"),
   consentRateLimiter = createConsentRateLimiter(),
   patientProfiles = defaultPatientProfileStore,
   emergencyQrBaseUrl = process.env.EMERGENCY_QR_BASE_URL,
@@ -933,4 +934,8 @@ router.get("/qr/scan/:token", emergencyScanRateLimiter, (req, res) => {
 
 return router;
 }
-export default createConsentRouter();
+let defaultRouter;
+export default function consentRoutes(req, res, next) {
+  defaultRouter ||= createConsentRouter();
+  return defaultRouter(req, res, next);
+}

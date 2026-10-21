@@ -1,13 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
+import { getDataDir } from './storagePaths.js';
 
-const defaultFile = fileURLToPath(new URL('../data/audit.jsonl', import.meta.url));
+export function getAuditFilePath() {
+  return process.env.HEALTHVAULT_AUDIT_FILE || path.join(getDataDir(), 'audit.jsonl');
+}
 const actions = new Set(['RecordStored', 'RecordDeleted', 'RecordServed', 'RecordAccessDenied', 'RecordUploadDenied', 'AccessRequested', 'RequestAccepted', 'RequestRejected', 'EmergencyCreated', 'EmergencyServed']);
 
 // Deliberately allowlist fields: never store tokens, encryption keys, or medical data.
-export function createAuditStore(file = defaultFile) {
+export function createAuditStore(file = getAuditFilePath()) {
   let writeFailed = false;
   return {
     append({ action, actor, patient, doctor, recordId, outcome = 'completed' }) {
@@ -37,7 +39,7 @@ export function createAuditStore(file = defaultFile) {
   };
 }
 
-export const auditStore = createAuditStore(process.env.HEALTHVAULT_AUDIT_FILE || defaultFile);
+export const auditStore = createAuditStore(getAuditFilePath());
 export function recordActivity(event) {
   try { auditStore.append(event); }
   catch { console.error('Backend audit storage unavailable; the audit endpoint will report incomplete coverage.'); }

@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { getDataDir } from './storagePaths.js';
 
-export function createAppointmentStore(file = fileURLToPath(new URL('../data/appointments.json', import.meta.url))) {
+export function createAppointmentStore(file = path.join(getDataDir(), 'appointments.json')) {
   return {
     read() {
       if (!fs.existsSync(file)) return [];

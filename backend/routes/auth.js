@@ -1,13 +1,13 @@
 import express from "express";
 import fs from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { ethers } from "ethers";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { createChallengeStore } from "../services/authChallenges.js";
 import { createDoctorProfileStore } from "../services/doctorProfileStore.js";
 import { createAuthRateLimiter } from "../middleware/rateLimiting.js";
+import { getDataDir } from "../services/storagePaths.js";
 dotenv.config();
 
 // Patient/Doctor ID registry
@@ -31,7 +31,7 @@ Object.entries(KNOWN_WALLETS).forEach(([addr, info]) => {
   if (num >= idCounter) idCounter = num + 1;
 });
 
-export function initPersistentProfiles(dataDir = fileURLToPath(new URL("../data", import.meta.url))) {
+export function initPersistentProfiles(dataDir = getDataDir()) {
   try {
     const patientProfilesFile = path.join(dataDir, "patient_profiles.json");
     if (fs.existsSync(patientProfilesFile)) {

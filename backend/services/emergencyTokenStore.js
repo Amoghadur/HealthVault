@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
 import { ethers } from 'ethers';
+import { getDataDir } from './storagePaths.js';
 
 export function normalizeWallet(address) {
   if (typeof address !== 'string' || !ethers.isAddress(address)) {
@@ -11,7 +11,7 @@ export function normalizeWallet(address) {
   return address.toLowerCase();
 }
 
-export function createEmergencyTokenStore(file = fileURLToPath(new URL('../data/emergency_tokens.json', import.meta.url))) {
+export function createEmergencyTokenStore(file = path.join(getDataDir(), 'emergency_tokens.json')) {
   function read() {
     let raw;
     try {

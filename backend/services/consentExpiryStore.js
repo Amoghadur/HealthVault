@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
 import { ethers } from 'ethers';
+import { getDataDir } from './storagePaths.js';
 
 export const ALLOWED_DURATIONS = [5, 15, 30, 60];
 const ALLOWED_SET = new Set(ALLOWED_DURATIONS);
@@ -22,7 +22,7 @@ export function validateDuration(minutes) {
   return num;
 }
 
-export function createConsentExpiryStore(file = fileURLToPath(new URL('../data/consent_expiries.json', import.meta.url))) {
+export function createConsentExpiryStore(file = path.join(getDataDir(), 'consent_expiries.json')) {
   function read() {
     let raw;
     try { raw = fs.readFileSync(file, 'utf8'); }

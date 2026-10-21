@@ -13,6 +13,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { encryptedFilesOnly } from "./middleware/recordAccess.js";
 import { validateMasterSecret, migrateRecordsMetadata } from "./services/keyManagement.js";
+import { getDataDir, getUploadsDir, ensureStorageDirectories } from "./services/storagePaths.js";
 
 export function validateJwtSecret(...args) {
   const secret = args.length > 0 ? args[0] : process.env.JWT_SECRET;
@@ -46,9 +47,18 @@ if (isMainModule) {
     process.exit(1);
   }
 
+  // Ensure persistent storage directories exist and are accessible
+  try {
+    ensureStorageDirectories();
+  } catch (err) {
+    console.error("FATAL: Failed to initialize storage directories on startup:");
+    console.error(err.message);
+    process.exit(1);
+  }
+
   // Run one-time idempotent migration of records metadata
   try {
-    const migration = migrateRecordsMetadata({ uploadsDir: "uploads", masterKeyBuffer });
+    const migration = migrateRecordsMetadata({ uploadsDir: getUploadsDir(), masterKeyBuffer });
     if (migration.migrated) {
       console.log(`Migrated ${migration.count} record key(s) to encrypted-at-rest. Backup saved to ${migration.backupPath}`);
     }
@@ -105,7 +115,7 @@ export function createServerApp({ allowedOriginsEnv = process.env.CORS_ALLOWED_O
   app.use("/patient", patientRoutes);
   app.use("/api/patient", patientRoutes);
   app.use("/audit", auditRoutes);
-  app.use("/files", encryptedFilesOnly, express.static("uploads"));
+  app.use("/files", encryptedFilesOnly, express.static(getUploadsDir()));
 
   // Health check — open this in browser to confirm backend works
   app.get("/", (req, res) => {

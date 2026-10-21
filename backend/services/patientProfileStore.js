@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { randomUUID } from 'node:crypto';
 import { ethers } from 'ethers';
+import { getDataDir } from './storagePaths.js';
 
 export const ALLOWED_BLOOD_GROUPS = new Set(['', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']);
 
@@ -297,7 +297,7 @@ export function validatePatientProfileFields(input) {
   };
 }
 
-export function createPatientProfileStore(file = fileURLToPath(new URL('../data/patient_profiles.json', import.meta.url))) {
+export function createPatientProfileStore(file = path.join(getDataDir(), 'patient_profiles.json')) {
   function read() {
     let raw;
     try {

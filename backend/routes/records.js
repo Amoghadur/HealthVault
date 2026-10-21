@@ -14,11 +14,12 @@ import { defaultExpiryStore } from "../services/consentExpiryStore.js";
 import { defaultConsentAllowListStore } from "../services/consentAllowListStore.js";
 import { wrapKey, resolveRecordKey, validateMasterSecret } from "../services/keyManagement.js";
 import { createRecordUploadRateLimiter } from "../middleware/rateLimiting.js";
+import { getUploadsDir } from "../services/storagePaths.js";
 dotenv.config();
 
 // Injectable storage and external services keep route tests isolated from real records.
 export function createRecordRouter({
-  uploadsDir = "uploads",
+  uploadsDir = getUploadsDir(),
   hasAccess = readCurrentAccess,
   audit = recordActivity,
   pinFile,
@@ -77,18 +78,25 @@ export function createRecordRouter({
 
   // ── Load records from disk on startup ──
   let uploadedRecords = [];
-  try {
-    if (fs.existsSync(RECORDS_FILE)) {
-      const raw = fs.readFileSync(RECORDS_FILE, "utf8");
-      uploadedRecords = JSON.parse(raw);
-      console.log(`Loaded ${uploadedRecords.length} records from disk`);
-    } else {
-      fs.writeFileSync(RECORDS_FILE, JSON.stringify([], null, 2));
-      console.log("Created empty records_metadata.json");
+  if (fs.existsSync(RECORDS_FILE)) {
+    let raw;
+    try {
+      raw = fs.readFileSync(RECORDS_FILE, "utf8");
+    } catch (err) {
+      throw new Error(`Failed to read records metadata from disk: ${err.message}`);
     }
-  } catch (err) {
-    console.error("Error loading records:", err.message);
-    uploadedRecords = [];
+    try {
+      uploadedRecords = JSON.parse(raw);
+    } catch (err) {
+      throw new Error(`Failed to parse records metadata from disk: ${err.message}`);
+    }
+    if (!Array.isArray(uploadedRecords)) {
+      throw new Error("Failed to parse records metadata from disk: Expected a JSON array.");
+    }
+    console.log(`Loaded ${uploadedRecords.length} records from disk`);
+  } else {
+    fs.writeFileSync(RECORDS_FILE, JSON.stringify([], null, 2));
+    console.log("Created empty records_metadata.json");
   }
 
   // ── Save records to disk ──
@@ -310,10 +318,14 @@ export function createRecordRouter({
     // Re-read from disk every time to ensure latest data
     try {
       if (fs.existsSync(RECORDS_FILE)) {
-        uploadedRecords = JSON.parse(fs.readFileSync(RECORDS_FILE, "utf8"));
+        const raw = fs.readFileSync(RECORDS_FILE, "utf8");
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) throw new Error("Invalid records metadata");
+        uploadedRecords = parsed;
       }
     } catch (err) {
       console.error("Error re-reading records:", err.message);
+      return res.status(500).json({ error: "Could not load records." });
     }
 
     const addr = req.user.address.toLowerCase();
